@@ -16,9 +16,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
@@ -52,6 +54,7 @@ public class PagamentoControllerTest {
 
         Mockito.when(service.getById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
 
+        Mockito.when(service.createPagamento(any())).thenReturn(dto);
     }
 
     @Test
@@ -77,6 +80,16 @@ public class PagamentoControllerTest {
         ResultActions result = mockMvc.perform(get("/pagamentos/{id}", nonExistingId).accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void createPagamentoShouldReturnPagamentoDTOCreated()throws Exception{
+        PagamentoDTO newPagamentoDTO = Factory.createNewPagamentoDTO();
+
+        String jsonRequestBody = objectMapper.writeValueAsString(newPagamentoDTO);
+
+        mockMvc.perform(post("/pagamentos").content(jsonRequestBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated()).andExpect(header().exists("Location")).andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.valor").exists()).andExpect(jsonPath("$.status").exists()).andExpect(jsonPath("$.pedidoId").exists()).andExpect(jsonPath("$.formaDePagamentoId").exists());
+
     }
 
 
