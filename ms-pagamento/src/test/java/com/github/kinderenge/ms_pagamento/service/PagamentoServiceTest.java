@@ -96,7 +96,7 @@ public class PagamentoServiceTest {
 
     @Test
     public void getByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist(){
-        Assertions.assertThrows(ResourceNotFoundException.class,()->{
+        Assertions.assertThrows(ResourceNotFoundException.class, ()->{
             service.getById(nonExistingId);
         });
     }
