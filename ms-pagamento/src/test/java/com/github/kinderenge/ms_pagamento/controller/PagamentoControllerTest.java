@@ -7,6 +7,7 @@ import com.github.kinderenge.ms_pagamento.service.PagamentoService;
 import com.github.kinderenge.ms_pagamento.service.exceptions.ResourceNotFoundException;
 import com.github.kinderenge.ms_pagamento.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,10 @@ public class PagamentoControllerTest {
         Mockito.when(service.updatePagamento(eq(existingId),any())).thenReturn(dto);
 
         Mockito.when(service.updatePagamento(eq(nonExistingId),any())).thenThrow(ResourceNotFoundException.class);
+
+        Mockito.doNothing().when(service).deletePagamento(existingId);
+
+        Mockito.doThrow(ResourceNotFoundException.class).when(service).deletePagamento(nonExistingId);
     }
 
     @Test
@@ -108,6 +113,17 @@ public class PagamentoControllerTest {
         String jsonRequestBody = objectMapper.writeValueAsString(dto);
 
         mockMvc.perform(put("/pagamentos/{id}",nonExistingId).content(jsonRequestBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("deletePagamento deverá não fazer nada quando ID existe")
+    public void deletePagamentoShouldDoNothingWhenIdExists()throws Exception{
+        mockMvc.perform(delete("/pagamentos/{id}",existingId).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deletePagamentoShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist()throws Exception{
+        mockMvc.perform(delete("/pagamentos/{id}", nonExistingId).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNotFound());
     }
 
 }
