@@ -2,6 +2,7 @@ package com.github.kinderenge.ms_pagamento.service;
 
 
 import com.github.kinderenge.ms_pagamento.repository.PagamentoRepository;
+import com.github.kinderenge.ms_pagamento.service.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,10 +39,25 @@ public class PagamentoServiceIT {
 
     @Test
     public void deletePagamentoShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist(){
-        Assertions.assertThrows(ResolutionException.class, ()->{
+        Assertions.assertThrows(ResourceNotFoundException.class, ()->{
             service.deletePagamento(nonExistingId);
-        })
+        });
     }
+
+    @Test
+    public void getAllShouldReturnPagamentoDTOList(){
+
+        var result = service.getAll();
+
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(countTotalPagamentos, result.size());
+        Assertions.assertEquals(Double.valueOf(35.55), result.get(0).getValor().doubleValue());
+        Assertions.assertEquals("Amadeus Mozart", result.get(0).getNome());
+        Assertions.assertEquals("Chiquinha Gonzaga", result.get(1).getNome());
+        Assertions.assertNull(result.get(5).getNome());
+    }
+
+
 
 
 }
