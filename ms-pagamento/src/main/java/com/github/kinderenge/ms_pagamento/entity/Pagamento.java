@@ -30,5 +30,5 @@ public class Pagamento {
     @Column(nullable = false)
     private Long pedidoId;
     @Column(nullable = false)
-    private long formaDePagamentoId; //1- dinheiro | 2 - cartão | 3 - pix
+    private Long formaDePagamentoId; //1- dinheiro | 2 - cartão | 3 - pix
 }
