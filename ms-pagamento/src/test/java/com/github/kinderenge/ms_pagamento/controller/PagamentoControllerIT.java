@@ -103,4 +103,9 @@ public class PagamentoControllerIT {
         mockMvc.perform(delete("/pagamentos/{id}", existingId).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNoContent());
     }
 
+    @Test
+    public void deleteShouldReturnNotFoundWHenIdDoesNotExist() throws Exception{
+        mockMvc.perform(delete("/pagamento/{id}", nonExistingId).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNotFound());
+    }
+
 }
