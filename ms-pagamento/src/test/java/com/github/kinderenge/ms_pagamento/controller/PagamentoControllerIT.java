@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kinderenge.ms_pagamento.dto.PagamentoDTO;
 import com.github.kinderenge.ms_pagamento.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -69,6 +70,14 @@ public class PagamentoControllerIT {
         pagamentoDTO = Factory.createNewPagamentoDTOWithRequiredFiels();
         String jsonRequestBody = objectMapper.writeValueAsString(pagamentoDTO);
         mockMvc.perform(post("/pagamentos").content(jsonRequestBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated()).andExpect(header().exists("Location")).andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.valor").exists()).andExpect(jsonPath("$.valor").value(pagamentoDTO.getValor())).andExpect(jsonPath("$.status").value("CRIADO")).andExpect(jsonPath("$.nome").isEmpty()).andExpect(jsonPath("$.validade").isEmpty());
+    }
+
+    @Test
+    @DisplayName("create deve lançar Exception quando dados inválidos")
+    public void createShouldThrowExceptionWhenInvalidData() throws Exception{
+        pagamentoDTO = Factory.createNewPagamentoDTOWithInvalidData();
+        String jsonRequestBody = objectMapper.writeValueAsString(pagamentoDTO);
+        mockMvc.perform(post("/pagamentos").content(jsonRequestBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isUnprocessableEntity());
     }
 
 }
