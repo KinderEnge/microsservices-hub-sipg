@@ -1,0 +1,8 @@
+INSERT INTO tb_pedido(nome, cpf, data, status) VALUES('Jon Snow', '12345678965', '2025-04-28', 'REALIZADO');
+INSERT INTO tb_item_do_pedido(quantidade, descricao, valor_unitario, pedido_id) VALUES (2, 'Mouse Microsft', 250, 1);
+INSERT INTO tb_item_do_pedido(quantidade, descricao, valor_unitario, pedido_id) VALUES (1, 'Teclado sem fio Microsft', 290, 1);
+
+
+
+INSERT INTO tb_pedido(nome, cpf, data, status) VALUES('Ayra Stark', '36547865432', '2025-04-28', 'REALIZADO');
+INSERT INTO tb_item_do_pedido(quantidade, descricao, valor_unitario, pedido_id) VALUES (1, 'Smart TV LG LED', 3599, 2);
