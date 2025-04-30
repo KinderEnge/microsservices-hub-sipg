@@ -31,6 +31,7 @@ public class PedidoDTO {
     private LocalDate data;
     @Enumerated(EnumType.STRING)
     private Status status;
+    @NotEmpty(message = "Pedido deve ter pelo meons um item de pedido")
     private List<@Valid ItemDoPedidoDTO> itens = new ArrayList<>();
 
     public PedidoDTO(Pedido entity){
