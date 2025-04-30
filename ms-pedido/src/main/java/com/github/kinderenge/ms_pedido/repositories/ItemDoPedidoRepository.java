@@ -11,5 +11,5 @@ public interface ItemDoPedidoRepository extends JpaRepository<ItemDoPedido, Long
     @Modifying
     @Transactional
     @Query("DELETE FROM ItemDoPedido i WHERE i.pedido.id = :pedidoId")
-    void delteByPedidoId(Long pedidoId);
+    void deleteByPedidoId(Long pedidoId);
 }
