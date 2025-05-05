@@ -67,6 +67,14 @@ public class PedidoService {
         }
     }
 
+    @Transactional
+    public void deletePedido(Long id){
+        if(!pedidoRepository.existsById(id)){
+            throw new ResourceNotFoundException("Recurso não enontrado. Id: "+id);
+        }
+        pedidoRepository.deleteById(id);
+    }
+
     private void copyDTOToEntity(PedidoDTO dto, Pedido entity) {
         entity.setNome(dto.getNome());
         entity.setCpf(dto.getCpf());
