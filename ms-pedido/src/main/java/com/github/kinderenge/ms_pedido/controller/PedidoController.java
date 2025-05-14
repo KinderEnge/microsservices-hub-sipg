@@ -20,6 +20,11 @@ public class PedidoController {
     @Autowired
     private PedidoService service;
 
+    @GetMapping("/port")
+    public String getPort(@Value("${local.server.port}")String porta){
+        return String.format("Request da Instância recebida na porta %s ", porta);
+    }
+
     @GetMapping
     public ResponseEntity<List<PedidoDTO>>getAllPedidos(){
         List<PedidoDTO>list = service.findAllPedidos();
