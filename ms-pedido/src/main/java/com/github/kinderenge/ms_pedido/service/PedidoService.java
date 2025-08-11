@@ -2,6 +2,7 @@ package com.github.kinderenge.ms_pedido.service;
 
 import com.github.kinderenge.ms_pedido.dto.ItemDoPedidoDTO;
 import com.github.kinderenge.ms_pedido.dto.PedidoDTO;
+import com.github.kinderenge.ms_pedido.dto.StatusDTO;
 import com.github.kinderenge.ms_pedido.entities.ItemDoPedido;
 import com.github.kinderenge.ms_pedido.entities.Pedido;
 import com.github.kinderenge.ms_pedido.entities.Status;
@@ -75,6 +76,29 @@ public class PedidoService {
             throw new ResourceNotFoundException("Recurso não enontrado. Id: "+id);
         }
         pedidoRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void aprovarPagamentoDoPedido(Long id){
+        Pedido pedido = pedidoRepository.getPedidoByIdWithItems(id);
+        if(pedido == null){
+            throw new ResourceNotFoundException("Pedido id: "+id+" não encontrado.");
+        }
+
+        pedido.setStatus(Status.PAGO);
+        pedidoRepository.updatePedido(Status.PAGO,pedido);
+    }
+
+    @Transactional
+    public PedidoDTO upadatePagamentoDoPedido(Long id, StatusDTO statusDTO){
+        Pedido pedido = pedidoRepository.getPedidoByIdWithItems(id);
+        if(pedido == null){
+            throw new ResourceNotFoundException("Pedido id: "+id+" não encontrado.");
+        }
+
+        pedido.setStatus(statusDTO.getStatus());
+        pedidoRepository.updatePedido(statusDTO.getStatus(),pedido);
+        return new PedidoDTO(pedido);
     }
 
     private void copyDTOToEntity(PedidoDTO dto, Pedido entity) {

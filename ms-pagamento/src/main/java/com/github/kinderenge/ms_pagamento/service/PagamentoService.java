@@ -3,14 +3,19 @@ package com.github.kinderenge.ms_pagamento.service;
 import com.github.kinderenge.ms_pagamento.dto.PagamentoDTO;
 import com.github.kinderenge.ms_pagamento.entity.Pagamento;
 import com.github.kinderenge.ms_pagamento.entity.Status;
+import com.github.kinderenge.ms_pagamento.https.PedidoClient;
+import com.github.kinderenge.ms_pagamento.service.exceptions.DatabaseException;
 import com.github.kinderenge.ms_pagamento.service.exceptions.ResourceNotFoundException;
 import com.github.kinderenge.ms_pagamento.repository.PagamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +23,20 @@ public class PagamentoService {
 
     @Autowired
     private PagamentoRepository repository;
+
+    @Autowired
+    private PedidoClient pedidoClient;
+
+    @Transactional
+    public void confirmarPagamentoDoPedido(Long id){
+        Optional<Pagamento>pagamento = repository.findById(id);
+        if(pagamento.isEmpty()){
+            throw new ResourceNotFoundException(("Recurso não encontrado. ID: "+id));
+        }
+        pagamento.get().setStatus(Status.CONFIRMADO);
+        repository.save(pagamento.get());
+        pedidoClient.atualizarPagamentoDoPedido(pagamento.get().getPedidoId());
+    }
 
     @Transactional(readOnly=true)
     public List<PagamentoDTO> getAll(){
@@ -53,13 +72,18 @@ public class PagamentoService {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void deletePagamento(Long id){
         if(!repository.existsById(id)){
             throw new ResourceNotFoundException("Recurso não encontrado. Id: "+id);
         }
-        repository.deleteById(id);
+        try{
+            repository.deleteById(id);
+        }catch (DataIntegrityViolationException e){
+            throw new DatabaseException("Falha de integridade referencial");
+        }
     }
+
 
 
     private void copyDtoToEntity(PagamentoDTO dto, Pagamento entity) {

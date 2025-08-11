@@ -2,8 +2,10 @@ package com.github.kinderenge.ms_pedido.controller;
 
 
 import com.github.kinderenge.ms_pedido.dto.PedidoDTO;
+import com.github.kinderenge.ms_pedido.dto.StatusDTO;
 import com.github.kinderenge.ms_pedido.service.PedidoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -59,5 +61,18 @@ public class PedidoController {
     public ResponseEntity<Void>deletePedidoById(@PathVariable Long id){
         service.deletePedido(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/pago")
+    public ResponseEntity<String> aprovarPagamentoDoPedido(@PathVariable @NotNull Long id){
+        service.aprovarPagamentoDoPedido(id);
+        String msg = "Pedido pago, aguaradar confirmação de pagamento.";
+        return ResponseEntity.ok().body(msg);
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<PedidoDTO> updatePagamentoStatus(@PathVariable Long id, @RequestBody StatusDTO statusDTO){
+        PedidoDTO dto = service.upadatePagamentoDoPedido(id, statusDTO);
+        return ResponseEntity.ok(dto);
     }
 }

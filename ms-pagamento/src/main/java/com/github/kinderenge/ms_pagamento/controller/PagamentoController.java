@@ -4,6 +4,7 @@ package com.github.kinderenge.ms_pagamento.controller;
 import com.github.kinderenge.ms_pagamento.dto.PagamentoDTO;
 import com.github.kinderenge.ms_pagamento.service.PagamentoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +51,10 @@ public class PagamentoController {
     public ResponseEntity<Void>delete(@PathVariable Long id){
         service.deletePagamento(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/confirmar")
+    public void confirmarPagamentoDePedido(@PathVariable @NotNull Long id){
+        service.confirmarPagamentoDoPedido(id);
     }
 }
