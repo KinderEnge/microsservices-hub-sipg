@@ -80,7 +80,7 @@ public class PedidoService {
 
     @Transactional
     public void aprovarPagamentoDoPedido(Long id){
-        Pedido pedido = pedidoRepository.getPedidoByIdWithItems(id);
+        Pedido pedido = pedidoRepository.getPedidoByIdWithItens(id);
         if(pedido == null){
             throw new ResourceNotFoundException("Pedido id: "+id+" não encontrado.");
         }
@@ -91,7 +91,7 @@ public class PedidoService {
 
     @Transactional
     public PedidoDTO upadatePagamentoDoPedido(Long id, StatusDTO statusDTO){
-        Pedido pedido = pedidoRepository.getPedidoByIdWithItems(id);
+        Pedido pedido = pedidoRepository.getPedidoByIdWithItens(id);
         if(pedido == null){
             throw new ResourceNotFoundException("Pedido id: "+id+" não encontrado.");
         }

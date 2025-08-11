@@ -84,6 +84,17 @@ public class PagamentoService {
         }
     }
 
+    @Transactional
+    public void alterarStatusDoPagamento(Long id){
+        Optional<Pagamento> pagamento = repository.findById(id);
+        if(pagamento.isEmpty()){
+            throw new ResourceNotFoundException("Recurso não encontrado. ID: "+id);
+        }
+
+        pagamento.get().setStatus(Status.CONFIRMACAO_PENDENTE);
+        repository.save(pagamento.get());
+    }
+
 
 
     private void copyDtoToEntity(PagamentoDTO dto, Pagamento entity) {
